@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot name="qronk" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.1 0.1 0.1" />
+            </geometry>
+        </visual>
+    </link>
+
+</robot>
