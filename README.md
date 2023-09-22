@@ -20,7 +20,7 @@ cd ~/qronk_ws/src/
 git clone https://github.com/shinben0327/Qronk.git
 ```
 
-On terminal, head to the `qronk_ws` directory and run the `colcon build` command in order to build to workspace.
+On terminal, head to the `qronk_ws` directory and run the `colcon build` command in order to build the workspace.
 
 ```
 cd ~/qronk_ws/
