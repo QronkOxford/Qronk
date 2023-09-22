@@ -14,7 +14,18 @@ Follow the [installation page](https://docs.ros.org/en/humble/Installation.html)
 
 Create a source directory under your workspace (i.e. `~/qronk_ws/src/`), and clone this repository into the `src` folder. 
 
+```
+mkdir ~/qronk_ws/src/
+cd ~/qronk_ws/src/
+git clone https://github.com/shinben0327/Qronk.git
+```
+
 On terminal, head to the `qronk_ws` directory and run the `colcon build` command in order to build to workspace.
+
+```
+cd ~/qronk_ws/
+colcon build
+```
 
 ### Run the code
 
