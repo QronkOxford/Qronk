@@ -4,12 +4,12 @@
     <joint name="base_chassis_joint" type="fixed">
 
         <parent link="base_link" />
-        <child link="chassis" />
+        <child link="chassis_link" />
         <origin xyz="0 0 0.038144" rpy="0 0 0" />
 
     </joint>
 
-    <link name="chassis">
+    <link name="chassis_link">
 
         <visual>
             <geometry>
@@ -40,13 +40,13 @@
 
     <joint name="chassis_battery_joint" type="fixed">
 
-        <parent link="chassis" />
-        <child link="battery" />
+        <parent link="chassis_link" />
+        <child link="battery_link" />
         <origin xyz="0 0 -0.0305" rpy="0 0 0" />
 
     </joint>
 
-    <link name="battery">
+    <link name="battery_link">
 
         <visual>
             <geometry>
@@ -72,7 +72,7 @@
 
     <joint name="chassis_raspberry_joint" type="fixed">
 
-        <parent link="chassis" />
+        <parent link="chassis_link" />
         <child link="raspberry_link" />
         <origin xyz="0 0 0.044" rpy="0 0 0" />
 
