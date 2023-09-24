@@ -23,7 +23,7 @@
         <!-- TODO will have collision with its own components; needs fix -->
         <collision>
             <geometry>
-                <box size="0.185 0.136835 0.000495" />
+                <box size="0.185 0.136835 0.0495" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
         </collision>
