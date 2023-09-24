@@ -1,6 +1,6 @@
 <launch>
     <let name="urdf_path"
-        value="$(find-pkg-share qronk_description)/urdf/qronk.urdf.xacro" />
+        value="$(find-pkg-share qronk_description)/urdf/mockup.urdf.xacro" />
 
     <let name="rviz_config_path"
         value="$(find-pkg-share qronk_description)/rviz/urdf_config.rviz" />
