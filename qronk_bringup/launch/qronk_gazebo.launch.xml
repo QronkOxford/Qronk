@@ -1,26 +1,24 @@
-<launch>
+<launch> 
 
     <let name="urdf_path"
         value="$(find-pkg-share qronk_description)/urdf/qronk.urdf.xacro" />
 
-    <!-- <let name="rviz_config_path"
-        value="$(find-pkg-share qronk_bringup)/rviz/urdf_config.rviz" /> -->
+    <let name="rviz_config_path"
+        value="$(find-pkg-share qronk_bringup)/rviz/urdf_config.rviz" />
 
     <node pkg="robot_state_publisher" exec="robot_state_publisher">
         <param name="robot_description"
             value="$(command 'xacro $(var urdf_path)')" />
     </node>
 
-    <!-- <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
+    <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
         <arg name="world" value="$(find-pkg-share qronk_bringup)/worlds/test_world.world" />
-    </include> -->
-    <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py" />
+    </include>
 
     <node pkg="gazebo_ros" exec="spawn_entity.py"
         args="-topic robot_description -entity qronk" />
 
-    <!-- <node pkg="rviz2" exec="rviz2" output="screen"
-        args="-d $(var rviz_config_path)" /> -->
-    <node pkg="rviz2" exec="rviz2" output="screen" />
+    <node pkg="rviz2" exec="rviz2" output="screen"
+        args="-d $(var rviz_config_path)" />
 
 </launch>

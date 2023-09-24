@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <link name="base_link" />
-
     <joint name="base_chassis_joint" type="fixed">
 
         <parent link="base_link" />
         <child link="chassis" />
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0.038144" rpy="0 0 0" />
 
     </joint>
 
@@ -21,6 +19,86 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="grey" />
         </visual>
+
+        <!-- TODO will have collision with its own components; needs fix -->
+        <collision>
+            <geometry>
+                <box size="0.185 0.136835 0.000495" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </collision>
+
+        <!-- numbers are based on Fusion 360 calculations -->
+        <inertial>  
+            <mass value="0.345" />
+            <inertia ixx="1.452E-3" ixy="-1.094E-3" ixz="-1.442E-4"
+                iyy="2.678E-3" iyz="-1.244E-4"
+                izz="3.674E-3" />
+        </inertial>
+
+    </link>
+
+    <joint name="chassis_battery_joint" type="fixed">
+
+        <parent link="chassis" />
+        <child link="battery" />
+        <origin xyz="0 0 -0.0305" rpy="0 0 0" />
+
+    </joint>
+
+    <link name="battery">
+
+        <visual>
+            <geometry>
+                <mesh filename="package://qronk_description/meshes/battery.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <origin xyz="-0.069 -0.0225 0" rpy="0 0 0" />
+            <material name="grey" />
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.138 0.045 0.018" />
+            </geometry>
+            <origin xyz="-0.069 -0.0225 0" rpy="0 0 0" />
+        </collision>
+
+        <!-- TODO simple approximation; needs correction -->
+        <xacro:box_inertia m="0.15" l="0.138" w="0.045" h="0.018"
+            xyz="-0.069 -0.0225 0" rpy="0 0 0" />
+
+    </link>
+
+    <joint name="chassis_raspberry_joint" type="fixed">
+
+        <parent link="chassis" />
+        <child link="raspberry_link" />
+        <origin xyz="0 0 0.044" rpy="0 0 0" />
+
+    </joint>
+
+    <link name="raspberry_link">
+
+        <visual>
+            <geometry>
+                <mesh filename="package://qronk_description/meshes/raspberry.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <origin xyz="-0.05 -0.035 0" rpy="0 0 0" />
+            <material name="grey" />
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.1 0.07 0.025" />
+            </geometry>
+            <origin xyz="-0.05 -0.035 0" rpy="0 0 0" />
+        </collision>
+
+        <!-- TODO simple approximation, needs correction -->
+        <xacro:box_inertia m="0.35" l="0.1" w="0.07" h="0.025"
+            xyz="-0.05 -0.035 0" rpy="0 0 0" />
 
     </link>
 
