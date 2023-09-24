@@ -20,14 +20,14 @@ cd ~/qronk_ws/src/
 git clone https://github.com/shinben0327/Qronk.git
 ```
 
-On terminal, head to the `qronk_ws` directory and run the `colcon build` command in order to build to workspace.
+On terminal, head to the `qronk_ws` directory and run the `colcon build` command in order to build the workspace.
 
 ```
 cd ~/qronk_ws/
 colcon build
 ```
 
-### Run the code
+### Source workspace
 
 Source the workspace using the following command. (It may be helpful to add this to the `.bashrc` file to avoid the need to run this for every terminal session.) 
 
@@ -35,6 +35,8 @@ Source the workspace using the following command. (It may be helpful to add this
 source /opt/ros/humble/setup.bash
 source ~/qronk_ws/install/setup.bash
 ```
+
+## Usage
 
 You can now use any of the launch files using the following command.
 
