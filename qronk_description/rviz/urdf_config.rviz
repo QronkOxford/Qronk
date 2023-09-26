@@ -72,17 +72,32 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        battery:
+        battery_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        chassis:
+        chassis_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lower_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         raspberry_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        shoulder_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        upper_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -96,19 +111,42 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz_default_plugins/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        base_link:
+          Value: false
+        battery_link:
+          Value: false
+        chassis_link:
+          Value: true
+        lower_leg_link:
+          Value: true
+        raspberry_link:
+          Value: false
+        shoulder_link:
+          Value: true
+        upper_leg_link:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: false
       Tree:
-        {}
+        base_link:
+          chassis_link:
+            battery_link:
+              {}
+            raspberry_link:
+              {}
+          shoulder_link:
+            upper_leg_link:
+              lower_leg_link:
+                {}
       Update Interval: 0
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -155,25 +193,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 0.5228195190429688
+      Distance: 0.48833486437797546
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.025561388581991196
-        Y: -0.020406654104590416
-        Z: -0.00439418526366353
+        X: 0.039914973080158234
+        Y: -0.025885848328471184
+        Z: -0.030080456286668777
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5053969621658325
+      Pitch: 0.5903970003128052
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.7454028725624084
+      Yaw: 4.0235915184021
     Saved: ~
 Window Geometry:
   Displays:
@@ -191,5 +229,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1777
-  X: 403
-  Y: 66
+  X: 371
+  Y: 34

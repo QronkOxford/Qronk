@@ -6,6 +6,7 @@
     <xacro:include filename="common_properties.xacro" />
     <xacro:include filename="chassis.xacro" />
     <xacro:include filename="chassis_gazebo.xacro" />
-    <!-- <xacro:include filename="leg.xacro" /> -->
+    <xacro:include filename="leg.xacro" />
+    <xacro:include filename="leg_gazebo.xacro" />
 
 </robot>
