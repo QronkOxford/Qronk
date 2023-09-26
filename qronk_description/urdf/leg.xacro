@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <joint name="base_shoulder_joint" type="fixed">
+    <joint name="base_shoulder_joint" type="revolute">
         <parent link="base_link" />
         <child link="shoulder_link" />
         <origin xyz="0.0885 -0.047417 0.000052" rpy="0 0 0" />
+        <axis xyz="1 0 0" />
+        <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
     </joint>
 
     <link name="shoulder_link">
@@ -18,10 +20,12 @@
         </visual>
     </link>
 
-    <joint name="shoulder_upper_leg_joint" type="fixed">
+    <joint name="shoulder_upper_leg_joint" type="revolute">
         <parent link="shoulder_link" />
         <child link="upper_leg_link" />
         <origin xyz="0.03 -0.0214 -0.00002" rpy="0 0 0" />
+        <axis xyz="0 1 0" />
+        <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
     </joint>
 
     <link name="upper_leg_link">
@@ -35,10 +39,12 @@
         </visual>
     </link>
 
-    <joint name="upper_leg_lower_leg_joint" type="fixed">
+    <joint name="upper_leg_lower_leg_joint" type="revolute">
         <parent link="upper_leg_link" />
         <child link="lower_leg_link" />
         <origin xyz="0 -0.016349 -0.098459" rpy="0 0 0" />
+        <axis xyz="0 1 0" />
+        <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
     </joint>
 
     <link name="lower_leg_link">
