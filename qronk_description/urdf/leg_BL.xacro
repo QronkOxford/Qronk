@@ -58,4 +58,20 @@
         </visual>
     </link>
 
+    <joint name="lower_leg_foot_BL_joint" type="fixed">
+        <parent link="lower_leg_BL_link" />
+        <child link="foot_BL_link" />
+        <origin xyz="-0 0.0066835 -0.09416" rpy="0 0 0" />
+    </joint>
+
+    <link name="foot_BL_link">
+        <visual>
+            <geometry>
+                <sphere radius="0.0075" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="grey" />
+        </visual>
+    </link>
+
 </robot>

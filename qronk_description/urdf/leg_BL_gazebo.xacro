@@ -13,4 +13,8 @@
         <material>Gazebo/Grey</material>
     </gazebo>
 
+    <gazebo reference="foot_BL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
 </robot>
