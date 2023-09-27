@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <joint name="base_shoulder_joint" type="revolute">
+    <joint name="base_shoulder_BR_joint" type="revolute">
         <parent link="base_link" />
-        <child link="shoulder_link" />
-        <origin xyz="0.0885 -0.047417 0.000052" rpy="0 0 0" />
+        <child link="shoulder_BR_link" />
+        <origin xyz="-0.0885 -0.047417 0.000052" rpy="0 0 0" />
         <axis xyz="1 0 0" />
         <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
     </joint>
 
-    <link name="shoulder_link">
+    <link name="shoulder_BR_link">
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/shoulder.stl"
+                <mesh filename="package://qronk_description/meshes/shoulder_BR.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -20,18 +20,18 @@
         </visual>
     </link>
 
-    <joint name="shoulder_upper_leg_joint" type="revolute">
-        <parent link="shoulder_link" />
-        <child link="upper_leg_link" />
-        <origin xyz="0.03 -0.0214 -0.00002" rpy="0 0 0" />
+    <joint name="shoulder_upper_leg_BR_joint" type="revolute">
+        <parent link="shoulder_BR_link" />
+        <child link="upper_leg_BR_link" />
+        <origin xyz="-0.03 -0.0214 -0.00002" rpy="0 0 0" />
         <axis xyz="0 1 0" />
         <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
     </joint>
 
-    <link name="upper_leg_link">
+    <link name="upper_leg_BR_link">
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/upper_leg.stl"
+                <mesh filename="package://qronk_description/meshes/upper_leg_BR.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -39,18 +39,18 @@
         </visual>
     </link>
 
-    <joint name="upper_leg_lower_leg_joint" type="revolute">
-        <parent link="upper_leg_link" />
-        <child link="lower_leg_link" />
-        <origin xyz="0 -0.016349 -0.098459" rpy="0 0 0" />
+    <joint name="upper_leg_lower_leg_BR_joint" type="revolute">
+        <parent link="upper_leg_BR_link" />
+        <child link="lower_leg_BR_link" />
+        <origin xyz="-0 -0.016349 -0.098459" rpy="0 0 0" />
         <axis xyz="0 1 0" />
         <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
     </joint>
 
-    <link name="lower_leg_link">
+    <link name="lower_leg_BR_link">
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/lower_leg.stl"
+                <mesh filename="package://qronk_description/meshes/lower_leg_BR.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
