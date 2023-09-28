@@ -20,7 +20,6 @@
             <material name="grey" />
         </visual>
 
-        <!-- TODO will have collision with its own components; needs fix -->
         <collision>
             <geometry>
                 <box size="0.185 0.136835 0.084144" />
@@ -28,13 +27,8 @@
             <origin xyz="0 0 0.003928" rpy="0 0 0" />
         </collision>
 
-        <!-- numbers are based on Fusion 360 calculations -->
-        <inertial>  
-            <mass value="0.345" />
-            <inertia ixx="1.452E-3" ixy="-1.094E-3" ixz="-1.442E-4"
-                iyy="2.678E-3" iyz="-1.244E-4"
-                izz="3.674E-3" />
-        </inertial>
+        <xacro:box_inertia m="0.3" l="0.185" w="0.137" h="0.084"
+            xyz="0 0 0.004" rpy="0 0 0" />
 
     </link>
 
@@ -64,9 +58,8 @@
             <origin xyz="0 0 0.009" rpy="0 0 0" />
         </collision>
 
-        <!-- TODO simple approximation; needs correction -->
-        <xacro:box_inertia m="0.15" l="0.138" w="0.045" h="0.018"
-            xyz="-0.069 -0.0225 0" rpy="0 0 0" />
+        <xacro:box_inertia m="0.35" l="0.138" w="0.045" h="0.018"
+            xyz="0 0 0.009" rpy="0 0 0" />
 
     </link>
 
@@ -96,9 +89,8 @@
             <origin xyz="0 0 0.0125" rpy="0 0 0" />
         </collision>
 
-        <!-- TODO simple approximation; needs correction -->
-        <xacro:box_inertia m="0.35" l="0.1" w="0.07" h="0.025"
-            xyz="-0.05 -0.035 0" rpy="0 0 0" />
+        <xacro:box_inertia m="0.15" l="0.1" w="0.07" h="0.025"
+            xyz="0 0 0.0125" rpy="0 0 0" />
 
     </link>
 

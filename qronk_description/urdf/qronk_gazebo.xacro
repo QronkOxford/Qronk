@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- chassis.xacro materials -->
+    <gazebo reference="chassis_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="battery_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="raspberry_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <!-- leg_FR.xacro materials -->
+    <gazebo reference="shoulder_FR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="upper_leg_FR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="lower_leg_FR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="foot_FR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <!-- leg_FL.xacro materials -->
+    <gazebo reference="shoulder_FL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="upper_leg_FL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="lower_leg_FL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="foot_FL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <!-- leg_BR.xacro materials -->
+    <gazebo reference="shoulder_BR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="upper_leg_BR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="lower_leg_BR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="foot_BR_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <!-- leg_BL.xacro materials -->
+    <gazebo reference="shoulder_BL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="upper_leg_BL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="lower_leg_BL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="foot_BL_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <!-- Gazebo plugins -->
+    <gazebo>
+        <plugin name="joint_state_publisher"
+            filename="libgazebo_ros_joint_state_publisher.so">
+
+            <!-- Update rate in Hertz -->
+            <update_rate>10</update_rate>
+
+            <!-- Name of joints in the model whose states will be published. -->
+            <joint_name>chassis_shoulder_FR_joint</joint_name>
+            <joint_name>shoulder_upper_leg_FR_joint</joint_name>
+            <joint_name>upper_leg_lower_leg_FR_joint</joint_name>
+            <joint_name>lower_leg_foot_FR_joint</joint_name>
+
+            <joint_name>chassis_shoulder_FL_joint</joint_name>
+            <joint_name>shoulder_upper_leg_FL_joint</joint_name>
+            <joint_name>upper_leg_lower_leg_FL_joint</joint_name>
+            <joint_name>lower_leg_foot_FL_joint</joint_name>
+
+            <joint_name>chassis_shoulder_BR_joint</joint_name>
+            <joint_name>shoulder_upper_leg_BR_joint</joint_name>
+            <joint_name>upper_leg_lower_leg_BR_joint</joint_name>
+            <joint_name>lower_leg_foot_BR_joint</joint_name>
+
+            <joint_name>chassis_shoulder_BL_joint</joint_name>
+            <joint_name>shoulder_upper_leg_BL_joint</joint_name>
+            <joint_name>upper_leg_lower_leg_BL_joint</joint_name>
+            <joint_name>lower_leg_foot_BL_joint</joint_name>
+
+        </plugin>
+    </gazebo>
+    <gazebo>
+        <plugin name="joint_pose_trajectory"
+            filename="libgazebo_ros_joint_pose_trajectory.so">
+
+            <!-- Update rate in Hz -->
+            <update_rate>2</update_rate>
+
+        </plugin>
+    </gazebo>
+
+</robot>

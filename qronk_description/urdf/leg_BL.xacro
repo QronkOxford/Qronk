@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <joint name="base_shoulder_BL_joint" type="revolute">
-        <parent link="base_link" />
+    <joint name="chassis_shoulder_BL_joint" type="revolute">
+
+        <parent link="chassis_link" />
         <child link="shoulder_BL_link" />
         <origin xyz="-0.0885 0.047417 0.000052" rpy="0 0 0" />
         <axis xyz="1 0 0" />
         <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
+
     </joint>
 
     <link name="shoulder_BL_link">
+
         <visual>
             <geometry>
                 <mesh filename="package://qronk_description/meshes/shoulder_BL.stl"
@@ -18,17 +21,31 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="grey" />
         </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.05 0.04 0.068" />
+            </geometry>
+            <origin xyz="-0.03 -0 -0.005" rpy="0 0 0" />
+        </collision>
+
+        <xacro:box_inertia m="0.1" l="0.05" w="0.04" h="0.068"
+            xyz="-0.03 -0 -0.005" rpy="0 0 0" />
+
     </link>
 
     <joint name="shoulder_upper_leg_BL_joint" type="revolute">
+
         <parent link="shoulder_BL_link" />
         <child link="upper_leg_BL_link" />
         <origin xyz="-0.03 0.0214 -0.00002" rpy="0 0 0" />
         <axis xyz="0 1 0" />
         <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
+
     </joint>
 
     <link name="upper_leg_BL_link">
+
         <visual>
             <geometry>
                 <mesh filename="package://qronk_description/meshes/upper_leg_BL.stl"
@@ -37,17 +54,31 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="grey" />
         </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.05 0.0532 0.137" />
+            </geometry>
+            <origin xyz="-0 0.0266 -0.0435" rpy="0 0 0" />
+        </collision>
+
+        <xacro:box_inertia m="0.1" l="0.05" w="0.0532" h="0.0137"
+            xyz="-0 0.0266 -0.0435" rpy="0 0 0" />
+
     </link>
 
     <joint name="upper_leg_lower_leg_BL_joint" type="revolute">
+
         <parent link="upper_leg_BL_link" />
         <child link="lower_leg_BL_link" />
         <origin xyz="-0 0.016349 -0.098459" rpy="0 0 0" />
         <axis xyz="0 1 0" />
         <limit lower="${-pi}" upper="${pi}" effort="100" velocity="100" />
+
     </joint>
 
     <link name="lower_leg_BL_link">
+
         <visual>
             <geometry>
                 <mesh filename="package://qronk_description/meshes/lower_leg_BL.stl"
@@ -56,15 +87,29 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="grey" />
         </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.028 0.0134 0.102" />
+            </geometry>
+            <origin xyz="-0 0.0067 -0.037" rpy="0 0 0" />
+        </collision>
+
+        <xacro:box_inertia m="0.1" l="0.028" w="0.0134" h="0.102"
+            xyz="-0 0.0067 -0.037" rpy="0 0 0" />
+
     </link>
 
     <joint name="lower_leg_foot_BL_joint" type="fixed">
+
         <parent link="lower_leg_BL_link" />
         <child link="foot_BL_link" />
         <origin xyz="-0 0.0066835 -0.09416" rpy="0 0 0" />
+
     </joint>
 
     <link name="foot_BL_link">
+
         <visual>
             <geometry>
                 <sphere radius="0.0075" />
@@ -72,6 +117,17 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="grey" />
         </visual>
+
+        <collision>
+            <geometry>
+                <sphere radius="0.0075" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </collision>
+
+        <xacro:sphere_inertia m="0.05" r="0.0075"
+            xyz="0 0 0" rpy="0 0 0" />
+        
     </link>
 
 </robot>

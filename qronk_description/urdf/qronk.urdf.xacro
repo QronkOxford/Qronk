@@ -6,15 +6,12 @@
     <xacro:include filename="common_properties.xacro" />
 
     <xacro:include filename="chassis.xacro" />
-    <xacro:include filename="chassis_gazebo.xacro" />
     
     <xacro:include filename="leg_FR.xacro" />
-    <xacro:include filename="leg_FR_gazebo.xacro" />
     <xacro:include filename="leg_FL.xacro" />
-    <xacro:include filename="leg_FL_gazebo.xacro" />
     <xacro:include filename="leg_BR.xacro" />
-    <xacro:include filename="leg_BR_gazebo.xacro" />
     <xacro:include filename="leg_BL.xacro" />
-    <xacro:include filename="leg_BL_gazebo.xacro" />
+
+    <xacro:include filename="qronk_gazebo.xacro" />
 
 </robot>
