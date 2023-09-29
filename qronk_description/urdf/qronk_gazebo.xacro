@@ -68,7 +68,7 @@
         <material>Gazebo/Grey</material>
     </gazebo>
 
-    <!-- Gazebo plugins -->
+    <!-- Gazebo plugins for servo joints -->
     <!-- Refer to https://github.com/ros-simulation/gazebo_ros_pkgs/tree/ros2/gazebo_plugins/include/gazebo_plugins -->
     <gazebo>
         <plugin name="joint_state_publisher"
