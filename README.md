@@ -15,7 +15,7 @@ Follow the [installation page](https://docs.ros.org/en/humble/Installation.html)
 Create a source directory under your workspace (i.e. `~/qronk_ws/src/`), and clone this repository into the `src` folder.
 
 ```bash
-mkdir ~/qronk_ws/src/
+mkdir -p ~/qronk_ws/src/
 cd ~/qronk_ws/src/
 git clone https://github.com/shinben0327/Qronk.git
 ```
