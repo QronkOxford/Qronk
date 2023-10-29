@@ -2,9 +2,9 @@
 
 Please contact [Jihwan Ben Shin](mailto:jihwan.shin@sjc.ox.ac.uk) or [Jin Rhee](mailto:jin.rhee@sjc.ox.ac.uk) if you have any questions.
 
-## 1. Install Ubuntu virtual machine
+## 1. Install Ubuntu and VS Code
 
-Follow the guides for [Windows](ubuntu_windows.md) or [Mac](ubuntu_mac.md) to install Ubuntu virtual machine for your computer.
+Follow the guides for [Windows](ubuntu_windows.md) or [Mac](ubuntu_mac.md) to install Ubuntu virtual machine and Visual Studio Code for your computer.
 
 ## 2. Install ROS2 Humble
 
