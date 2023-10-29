@@ -18,7 +18,7 @@ sudo apt install ros-humble-desktop
 
 ### 2.1. Sourcing the setup script
 
-To use ROS2, you will have to source the setup script using the following line of code each time you open a new Terminal session.
+To use ROS2, you will have to source the setup script using the following line of code each time you open a new terminal session.
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -67,6 +67,22 @@ To run some of our files, you may need to install some additional dependencies. 
 
 ## 4. Usage
 
+### 4.1. Sourcing the workspace setup script
+
+To use the package you have built, you need to source the workspace setup script in addition to the ROS2 setup script. Use the following line of code each time you open a new terminal session.
+
+```bash
+source ~/qronk_ws/install/setup.bash
+```
+
+If you want to do this automatically, add the line of code above to `.bashrc` in your home directory. You can easily do so by using the following line of code.
+
+```bash
+echo "source ~/qronk_ws/install/setup.bash" >> ~/.bashrc
+```
+
+### 4.2. Using the launch files
+
 You can now use any of the launch files using the following command:
 
 ```bash
@@ -78,3 +94,7 @@ For example, to display our model on Rviz:
 ```bash
 ros2 launch qronk_description display.launch.xml
 ```
+
+## 5. Troubleshooting
+
+We will add any common problems here with its answers.

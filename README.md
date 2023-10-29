@@ -2,11 +2,11 @@
 
 A quadruped robot project by a group of Oxford undergraduates.
 
-![qronk_cad](resources/qronk_cad.png)
+![qronk_cad](documents/media/qronk_cad.png)
 
 ## Setup
 
-The project is currently being developed based on [ROS2 Humble](https://docs.ros.org/en/humble/index.html). Follow [setup.md](documents/setup.md) to get started with using our code.
+Follow [setup.md](documents/setup.md) to get started with using our code.
 
 ## Contact Us
 
