@@ -12,7 +12,6 @@
     </node>
 
     <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
-        <!--Changed 'find-pkg-share qronk_gazebo' from 'find-pkg-share qronk_bringup'-->
         <arg name="world" value="$(find-pkg-share qronk_gazebo)/worlds/test_world.world" />
     </include>
 
