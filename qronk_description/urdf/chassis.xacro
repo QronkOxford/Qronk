@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+<!--Updated all model xacros to be compatible with rvis and gazebo-->
     <joint name="base_chassis_joint" type="fixed">
 
         <parent link="base_link" />
@@ -13,7 +13,7 @@
 
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/chassis.stl"
+                <mesh filename="file://$(find qronk_description)/meshes/chassis.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -44,7 +44,7 @@
 
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/battery.stl"
+                <mesh filename="file://$(find qronk_description)/meshes/battery.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="-0.069 -0.0225 0" rpy="0 0 0" />
@@ -75,7 +75,7 @@
 
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/raspberry.stl"
+                <mesh filename="file://$(find qronk_description)/meshes/raspberry.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="-0.05 -0.035 0" rpy="0 0 0" />
