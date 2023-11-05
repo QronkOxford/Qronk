@@ -10,6 +10,16 @@ Please contact [Jin Rhee](mailto:jin.rhee@sjc.ox.ac.uk) if you have any question
 
 Install Multipass following [this link](https://multipass.run/docs/installing-on-macos).
 
+Once installed, you should be able to use multipass from your terminal. The following will find the available images:
+```bash
+% multipass find
+Image                       Aliases           Version          Description
+...
+22.04                       jammy,lts         20231026         Ubuntu 22.04 LTS
+...
+```
+Multipass by default offers the Ubuntu 22.04 image, which we need to run ROS2.
+
 Once you have your Multipass instance created (make sure it's Ubuntu 22.04), you probably want to increase its disk memory, RAM, and CPU allocations. I recommend at least 4GB of RAM (memory), 20GB of disk memory (disk), and 2 CPUs. You can use the "set" command by following the instructions on [this link](https://multipass.run/docs/modify-an-instance#heading--set-the-cpu-ram-or-disk-of-an-instance).
 
 ### 1.2. Usage
