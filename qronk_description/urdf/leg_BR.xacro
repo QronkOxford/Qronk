@@ -15,7 +15,7 @@
 
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/shoulder_BR.stl"
+                <mesh filename="file://$(find qronk_description)/meshes/shoulder_BR.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -48,7 +48,7 @@
 
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/upper_leg_BR.stl"
+                <mesh filename="file://$(find qronk_description)/meshes/upper_leg_BR.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -81,7 +81,7 @@
 
         <visual>
             <geometry>
-                <mesh filename="package://qronk_description/meshes/lower_leg_BR.stl"
+                <mesh filename="file://$(find qronk_description)/meshes/lower_leg_BR.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
