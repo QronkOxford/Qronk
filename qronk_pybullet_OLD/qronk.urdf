@@ -27,7 +27,7 @@
   <link name="chassis_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/chassis.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/chassis.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -52,7 +52,7 @@
   <link name="battery_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/battery.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/battery.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="-0.069 -0.0225 0"/>
       <material name="grey"/>
@@ -77,7 +77,7 @@
   <link name="raspberry_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/raspberry.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/raspberry.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="-0.05 -0.035 0"/>
       <material name="grey"/>
@@ -104,7 +104,7 @@
   <link name="shoulder_FR_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/shoulder_FR.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/shoulder_FR.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -131,7 +131,7 @@
   <link name="upper_leg_FR_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/upper_leg_FR.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/upper_leg_FR.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -158,7 +158,7 @@
   <link name="lower_leg_FR_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/lower_leg_FR.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/lower_leg_FR.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -210,7 +210,7 @@
   <link name="shoulder_FL_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/shoulder_FL.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/shoulder_FL.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -237,7 +237,7 @@
   <link name="upper_leg_FL_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/upper_leg_FL.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/upper_leg_FL.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -264,7 +264,7 @@
   <link name="lower_leg_FL_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/lower_leg_FL.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/lower_leg_FL.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -316,7 +316,7 @@
   <link name="shoulder_BR_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/shoulder_BR.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/shoulder_BR.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -343,7 +343,7 @@
   <link name="upper_leg_BR_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/upper_leg_BR.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/upper_leg_BR.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -370,7 +370,7 @@
   <link name="lower_leg_BR_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/lower_leg_BR.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/lower_leg_BR.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -422,7 +422,7 @@
   <link name="shoulder_BL_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/shoulder_BL.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/shoulder_BL.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -449,7 +449,7 @@
   <link name="upper_leg_BL_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/upper_leg_BL.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/upper_leg_BL.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
@@ -476,7 +476,7 @@
   <link name="lower_leg_BL_link">
     <visual>
       <geometry>
-        <mesh filename="package://qronk_description/share/qronk_description/meshes/lower_leg_BL.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://qronk_description/meshes/lower_leg_BL.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <material name="grey"/>
