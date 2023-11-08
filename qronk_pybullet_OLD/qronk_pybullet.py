@@ -10,7 +10,7 @@ planeId = p.loadURDF("plane.urdf")
 
 startPos = [0,0,1]
 startOrientation = p.getQuaternionFromEuler([0,0,0])
-p.setAdditionalSearchPath(os.environ['HOME']+"/qronk_ws/src/qronk_pybullet/")
+p.setAdditionalSearchPath(os.environ['HOME']+"/qronk_ws/src/qronk_pybullet_OLD")
 qronkId = p.loadURDF("qronk.urdf",startPos, startOrientation)
 
 for i in range (10000):
