@@ -10,9 +10,7 @@
             value="$(command 'xacro $(var urdf_path)')" />
     </node>
 
-    <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" />
+    <node pkg="joint_state_publisher" exec="joint_state_publisher" />
 
-    <node pkg="rviz2" exec="rviz2" output="screen"
-        args="-d $(var rviz_config_path)" />
 
 </launch>
