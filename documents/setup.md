@@ -51,7 +51,7 @@ Create a source directory under your workspace (i.e. `~/qronk_ws/src/`), and clo
 ```bash
 mkdir -p ~/qronk_ws/src/
 cd ~/qronk_ws/src/
-git clone https://github.com/shinben0327/Qronk.git .
+git clone https://github.com/QronkOxford/Qronk.git .
 ```
 
 On terminal, head to the `qronk_ws` directory and run the `colcon build` command in order to build the workspace.
