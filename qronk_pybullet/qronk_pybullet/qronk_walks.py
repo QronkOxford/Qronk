@@ -158,7 +158,7 @@ def walk_backward(step_height=0.5,
                   step_length=0.5,
                   walking_speed=2,
                   resting_hip_angle = -0.2,
-                  resting_knee_angle= 1):
+                  resting_knee_angle= 0.8):
     # Get the current simulation time
     t = time.time()
 
