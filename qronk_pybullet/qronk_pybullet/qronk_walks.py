@@ -81,6 +81,8 @@ resting_knee_angle = 0.7  # This is a slight angle for the 'resting' position of
 # Constants for key bindings
 KEY_W = 65297  # Up arrow key
 KEY_S = 65298  # Down arrow key
+KEY_LEFT = 65295  # Left arrow key
+KEY_RIGHT = 65296  # Right arrow key
 
 def walk_forward(step_height=step_height, 
                  step_length=step_length,
@@ -227,6 +229,91 @@ def walk_backward(step_height=0.5,
                                     targetPosition=target_angle)
 
 
+def turn(side_to_turn, step_length=0.5, 
+         turning_speed=2, resting_hip_angle=-0.5, 
+         resting_knee_angle=0.7, step_height=0.5, 
+         fixed_chassis_shoulder_angle=0):
+    
+    # Get the current simulation time
+    t = time.time()
+
+    # Calculate normalized time in the gait cycle [0, 1)
+    gait_cycle_time = 1 / turning_speed
+    gait_phase = (t % gait_cycle_time) / gait_cycle_time
+
+    # Set turn side step scalar 
+    if side_to_turn == 'left':
+        step_scalar = 0
+    if side_to_turn == 'right':
+        step_scalar = 1
+
+    # Loop through each leg and set the position for each joint
+    for leg_name, joint_names in legs.items():
+        if leg_name in ['front_right','back_right']:
+            # Longer stride for non-turn side 
+            # OBS! appear to work the other way around (long right side step returns long left step)
+            # This could be a potetnial problem with
+            #  - the URDF file 
+            #  - direction of rotation
+            current_step_length = step_length * step_scalar
+        else:
+            current_step_length = step_length * (1-step_scalar)
+
+        if leg_name in ['front_right', 'back_left']:
+            # These legs will be in phase
+            leg_phase = gait_phase
+        elif leg_name in ['front_left', 'back_right']:
+            # These legs will be out of phase
+            leg_phase = (gait_phase + 0.5) % 1
+
+        # Set the fixed angle for chassis to shoulder joint
+        for joint_name in joint_names:
+            joint_index = joint_indices[joint_name]
+            if 'chassis_shoulder' in joint_name:
+                # Set the joint to the fixed angle using position control
+                p.setJointMotorControl2(bodyUniqueId=qronkId,
+                                        jointIndex=joint_index,
+                                        controlMode=p.POSITION_CONTROL,
+                                        targetPosition=fixed_chassis_shoulder_angle)
+                continue  # Skip the rest of the loop for this joint
+
+        # Define swing and stance phases
+        swing_phase_ratio = 0.3  # 30% of the gait cycle
+        stance_phase_ratio = 1 - swing_phase_ratio  # 70% of the gait cycle
+
+        # Calculate the target angles based on the phase
+        if 0 <= leg_phase < swing_phase_ratio:
+            # Swing phase (lifting the foot and moving it forward)
+            phase_ratio = leg_phase / swing_phase_ratio
+            hip_angle = resting_hip_angle + current_step_length * phase_ratio  # Moving forward
+            knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)  # Lifting up
+        elif swing_phase_ratio <= leg_phase < 1:
+            # Stance phase (foot is on the ground and dragging back)
+            phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
+            hip_angle = resting_hip_angle + current_step_length * (1 - phase_ratio)  # Moving back to the starting position
+            knee_angle = resting_knee_angle  # Keep the foot on the ground
+
+        # Ankle angle could be set to keep the foot parallel to the ground
+        ankle_angle = -knee_angle / 2  # Adjust this to maintain foot parallelism
+
+        # Apply the calculated angles to each joint in the current leg
+        for joint_name in joint_names:
+            joint_index = joint_indices[joint_name]
+            if 'shoulder_upper_leg' in joint_name:
+                target_angle = hip_angle
+            elif 'upper_leg_lower_leg' in joint_name:
+                target_angle = knee_angle
+            elif 'lower_leg_foot' in joint_name:
+                target_angle = ankle_angle
+            else:
+                continue
+
+            # Set the joint to the target angle using position control
+            p.setJointMotorControl2(bodyUniqueId=qronkId,
+                                    jointIndex=joint_index,
+                                    controlMode=p.POSITION_CONTROL,
+                                    targetPosition=target_angle)
+
 # Main simulation loop
 first_loop = True
 while True: # Loop indefinitely 
@@ -244,7 +331,15 @@ while True: # Loop indefinitely
         
     if KEY_S in keys and keys[KEY_S] & p.KEY_IS_DOWN:
         walk_backward()
-        
+
+    if KEY_RIGHT in keys and keys[KEY_RIGHT] & p.KEY_IS_DOWN:
+        turn(side_to_turn='right')
+
+    if KEY_LEFT in keys and keys[KEY_LEFT] & p.KEY_IS_DOWN:
+        turn(side_to_turn='left')
+
+    
+    
     # Update the camera position
     qronk_position, qronk_orientation = p.getBasePositionAndOrientation(qronkId)
     camera_target_position = qronk_position
