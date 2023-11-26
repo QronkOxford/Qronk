@@ -130,36 +130,25 @@ def walk_forward(step_height=step_height,
         # Define swing and stance phases
         swing_phase_ratio = 0.3  # 30% of the gait cycle
         stance_phase_ratio = 1 - swing_phase_ratio  # 70% of the gait cycle
-
-             # Calculate the target angles based on the phase
-        if 0 <= leg_phase < swing_phase_ratio:
-            # Swing phase (lifting the foot and moving it forward)
-            phase_ratio = leg_phase / swing_phase_ratio
-            hip_angle = resting_hip_angle - (step_length * phase_ratio)  # Moving forward
-            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
-
-        elif swing_phase_ratio <= leg_phase < 1:
-            # Stance phase (foot is on the ground and dragging back)
-            phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
-            hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio)) # Moving back to the starting position
-            knee_angle = resting_knee_angle  # Keep the foot on the ground 
-            
-        """ 
-        constant = 0.1
+        
+        constant = 0.1 # Acts as a constant decrease on hip angle (higher constant means overall lower foot position)
+        stance_constant = 0.35 # Mitigates the curve resulting from one angle rotating faster than the other during stance_phase.
         if 0 <= leg_phase < swing_phase_ratio:
             # Swing phase (lifting the foot and moving it forward)
             phase_ratio = leg_phase / (swing_phase_ratio)
-            hip_angle = resting_hip_angle - (step_length * phase_ratio) - constant
+            hip_angle = resting_hip_angle - (step_length * phase_ratio - constant)
             knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))
+            shoulder_angle = 0
         else:
             # Stance phase (foot is on the ground and dragging back)
             phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
             hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio) - constant)
+            shoulder_angle = 0
             if phase_ratio < 0.5:
-                knee_angle =  resting_knee_angle + (phase_ratio*0.3)
+                knee_angle =  resting_knee_angle - (phase_ratio*stance_constant)
             else:
-                knee_angle =  resting_knee_angle + ((1-phase_ratio)*0.3)
-        """
+                knee_angle =  resting_knee_angle - ((1-phase_ratio)*stance_constant)
+
         # Ankle angle could be set to keep the foot parallel to the ground
         ankle_angle = -knee_angle / 2  # Adjust this to maintain foot parallelism
 
@@ -186,8 +175,8 @@ def walk_forward(step_height=step_height,
 def walk_backward(step_height=0.5, 
                   step_length=0.5,
                   walking_speed=2,
-                  resting_hip_angle = 0.2,
-                  resting_knee_angle= -0.8):
+                  resting_hip_angle = 0.5,
+                  resting_knee_angle= -0.7):
     # Get the current simulation time
     t = time.time()
 
@@ -234,7 +223,8 @@ def walk_backward(step_height=0.5,
             phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
             hip_angle = resting_hip_angle + (step_length * (1 - phase_ratio))  # Moving forward to the starting position
             knee_angle = resting_knee_angle  # Keep the foot on the ground """
-
+        
+        """
         constant = 0.1
         if 0 <= leg_phase < swing_phase_ratio:
             # Swing phase (lifting the foot and moving it forward)
@@ -249,6 +239,26 @@ def walk_backward(step_height=0.5,
                 knee_angle =  resting_knee_angle + (phase_ratio*0.3)
             else:
                 knee_angle =  resting_knee_angle + ((1-phase_ratio)*0.3)
+
+        """
+        constant = 0.35 # Acts as a constant decrease on hip angle (higher constant means overall lower foot position)
+        stance_constant = 0.1 # Mitigates the curve resulting from one angle rotating faster than the other during stance_phase.
+
+        if 0 <= leg_phase < swing_phase_ratio:
+            # Swing phase (lifting the foot and moving it forward)
+            phase_ratio = leg_phase / (swing_phase_ratio)
+            hip_angle = resting_hip_angle + step_length * phase_ratio - constant
+            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))
+            shoulder_angle = 0
+        else:
+            # Stance phase (foot is on the ground and dragging back)
+            phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
+            hip_angle = resting_hip_angle + step_length * (1 - phase_ratio) - constant
+            shoulder_angle = 0
+            if phase_ratio < 0.5:
+                knee_angle =  resting_knee_angle - (phase_ratio*stance_constant)
+            else:
+                knee_angle =  resting_knee_angle - ((1-phase_ratio)*stance_constant)
 
         # Ankle angle could be set to keep the foot parallel to the ground
         ankle_angle = -knee_angle / 2  # Adjust this to maintain foot parallelism
