@@ -75,9 +75,16 @@ def simulate_foot_position_over_cycle(step_height,
                                       resting_knee_angle, 
                                       gait_cycle_time, 
                                       total_time,
-                                      swing_phase_ratio=0.3):
+                                      swing_phase_ratio=0.3,
+                                      angle_lists=False,
+                                      shoulder_angle_list=False,
+                                      hip_angle_list=False,
+                                      knee_angle_list=False,
+                                      ):
+    
+
     time_array = np.linspace(0, total_time, 1000)
-    foot_heights = []
+    foot_positions = []
     joint_positions_list = []
     for t in time_array:
         gait_phase = (t % gait_cycle_time) / gait_cycle_time
@@ -86,30 +93,38 @@ def simulate_foot_position_over_cycle(step_height,
         swing_phase_ratio = 0.3  # 30% of the gait cycle
         leg_phase = gait_phase  # Assuming front_right leg is in phase
         stance_phase_ratio = 1 - swing_phase_ratio  # 70% of the gait cycle
-        """ 
-        # Calculate the joint angles based on the phase
-        if 0 <= leg_phase < swing_phase_ratio:
-            # Swing phase (lifting the foot and moving it forward)
-            phase_ratio = leg_phase / swing_phase_ratio
-            hip_angle = resting_hip_angle + step_length * phase_ratio
-            knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)
-        else:
-            # Stance phase (foot is on the ground and dragging back)
-            #phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
-            hip_angle = resting_hip_angle + step_length * (1 - phase_ratio)
-            knee_angle = resting_knee_angle """
 
-        if 0 <= leg_phase < swing_phase_ratio:
-            # Swing phase (lifting the foot and moving it forward)
-            phase_ratio = leg_phase / swing_phase_ratio
-            hip_angle = resting_hip_angle - (step_length * phase_ratio)  # Moving forward
-            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
+        if angle_lists==False:
+            """ 
+            # Calculate the joint angles based on the phase
+            if 0 <= leg_phase < swing_phase_ratio:
+                # Swing phase (lifting the foot and moving it forward)
+                phase_ratio = leg_phase / swing_phase_ratio
+                hip_angle = resting_hip_angle + step_length * phase_ratio
+                knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)
+            else:
+                # Stance phase (foot is on the ground and dragging back)
+                #phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
+                hip_angle = resting_hip_angle + step_length * (1 - phase_ratio)
+                knee_angle = resting_knee_angle """
 
-        elif swing_phase_ratio <= leg_phase < 1:
-            # Stance phase (foot is on the ground and dragging back)
-            phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
-            hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio)) # Moving back to the starting position
-            knee_angle = resting_knee_angle  # Keep the foot on the ground 
+            if 0 <= leg_phase < swing_phase_ratio:
+                # Swing phase (lifting the foot and moving it forward)
+                phase_ratio = leg_phase / swing_phase_ratio
+                hip_angle = resting_hip_angle - (step_length * phase_ratio)  # Moving forward
+                knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
+                shoulder_angle = 0
+
+            elif swing_phase_ratio <= leg_phase < 1:
+                # Stance phase (foot is on the ground and dragging back)
+                phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
+                hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio)) # Moving back to the starting position
+                knee_angle = resting_knee_angle  # Keep the foot on the ground 
+                shoulder_angle = 0
+        else: 
+            shoulder_angle = shoulder_angle_list[t],
+            hip_angle = hip_angle_list[t]
+            knee_angle = knee_angle_list[t]
 
         # Calculate the foot height based on joint angles
         # Assuming simple linear relationship for demonstration
@@ -118,15 +133,16 @@ def simulate_foot_position_over_cycle(step_height,
                                                 L1 = 3.5,  # hip to upper-leg
                                                 L2 = 10,  # upper-leg to lower-leg
                                                 L3 = 10,  # lower-leg to foot
-                                                th1 = 0,  # hip servo
+                                                th1 = shoulder_angle,  # hip servo
                                                 th2 = hip_angle,  # upper-leg servo
                                                 th3 = knee_angle,  # lower-leg servo
                                                 )
-        foot_height = joint_positions[-1]  # Simplified calculation
-        foot_heights.append(foot_height)
+        print(len(joint_positions))
+        foot_position = joint_positions[-1]  # Simplified calculation
+        foot_positions.append(foot_position)
         joint_positions_list.append(joint_positions)
 
-    return time_array, foot_heights, joint_positions_list
+    return time_array, foot_positions, joint_positions_list
 
 # Get foot positions 
 swing_phase_ratio = 0.3
@@ -143,51 +159,97 @@ time_array, foot_positions, joint_positions_list = simulate_foot_position_over_c
 )
 
 
+def plot_gait(foot_positions, time_array, swing_phase_ratio, joint_positions_list):
 
-# Plotting gait patter overview 
-fig, ax = plt.subplots(1,1, figsize=(10, 6))
-ax.plot(time_array, foot_positions, label='foot position xyz')
-ax.axvline(x=(max(time_array)*swing_phase_ratio), ls="--", color='k')
-#x = [0, max((time_array)*swing_phase_ratio)]
+    # Plotting gait patter overview 
+    fig = plt.figure(figsize=(15, 6))
+    # Add the first 2D subplot on the left (1 row, 3 columns, position 1)
+    ax0 = fig.add_subplot(1, 2, 1)
+    ax0.plot(time_array, foot_positions, label='foot position xyz')
+    ax0.axvline(x=(max(time_array)*swing_phase_ratio), ls="--", color='k', label='End of Swing Phase')
 
-#plt.fill_between(x, y1=[0,10], color='grey', alpha='0.5')
-ax.set_xlabel('Time (s)')
-ax.set_ylabel('Centimeters')
-#ax.title('Foot Positions Over One Gait Cycle')
-ax.legend(labels=['X - Forward motion', 'Y - Side motion', 'Z - Height'])
-ax.grid(True)
-plt.show()
+    ax0.set_xlabel('Time (s)')
+    ax0.set_ylabel('Centimeters')
+    #ax.title('Foot Positions Over One Gait Cycle')
+    ax0.legend(labels=['X - Forward motion', 'Y - Side motion', 'Z - Height', 'End of Swing Phase'])
+    ax0.grid(True)
 
-""" 
-joint_data = np.array(joint_positions_list)
 
-# Update the animation function
-def update(num, joint_data, line):
-    # Reshape the joint_data for the current frame
-    current_data = joint_data[num].T  # Transpose to get shape (xyz, num_joints)
-    line.set_data(current_data[:2, :])  # Set x and y data
-    line.set_3d_properties(current_data[2, :])  # Set z data
-    return line,
+    joint_data = np.array(joint_positions_list)
 
-# Creating the figure for the animation
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
 
-# Initialize the line object (starting at the first time step)
-line, = ax.plot(joint_data[0, :, 0], joint_data[0, :, 1], joint_data[0, :, 2])
+    # Creating the figure for the animation
+    ax = fig.add_subplot(1, 2, 2, projection='3d')
 
-# Setting the axes properties based on the range of joint_data
-ax.set_xlim3d([np.min(joint_data[:,:,0]), np.max(joint_data[:,:,0])])
-ax.set_xlabel('X')
+    # Initialize the line and scatter objects (starting at the first time step)
+    line, = ax.plot(joint_data[0, :, 0], joint_data[0, :, 1], joint_data[0, :, 2], color='blue')
 
-ax.set_ylim3d([np.min(joint_data[:,:,1]), np.max(joint_data[:,:,1])])
-ax.set_ylabel('Y')
+    def update(num, joint_data, line):
+        # Updates lines in animation
+        current_data = joint_data[num].T
+        line.set_data(current_data[:2, :])
+        line.set_3d_properties(current_data[2, :])
 
-ax.set_zlim3d([np.min(joint_data[:,:,2]), np.max(joint_data[:,:,2])])
-ax.set_zlabel('Z')
+        return line,
 
-ax.set_title('3D Test')
+    x = joint_data[:, :, 0]
+    y = joint_data[:, :, 1]
+    z = joint_data[:, :, 2]
 
-# Creating the Animation object
-ani = animation.FuncAnimation(fig, update, frames=len(joint_data), fargs=(joint_data, line), interval=50)
- """
+    # Setting the axes labels
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title('Gait Animation')
+
+    # Extracting the ranges for each axis
+    x_min, x_max = np.min(joint_data[:,:,0]), np.max(joint_data[:,:,0])
+    y_min, y_max = np.min(joint_data[:,:,1]), np.max(joint_data[:,:,1])
+    z_min, z_max = np.min(joint_data[:,:,2]), np.max(joint_data[:,:,2])
+
+    # Calculating the maximum range
+    max_range = max(x_max - x_min, y_max - y_min, z_max - z_min) / 2.0
+
+    # Calculating the mid points for each axis
+    mid_x = (x_max + x_min) * 0.5
+    mid_y = (y_max + y_min) * 0.5
+    mid_z = (z_max + z_min) * 0.5
+
+    # Setting the same scale for all axes
+    ax.set_xlim(mid_x - max_range, mid_x + max_range)
+    ax.set_ylim(mid_y - max_range, mid_y + max_range)
+    ax.set_zlim(mid_z - max_range, mid_z + max_range)
+
+    # Plot Z height of starting position (presumably the ground)
+    z_height = z[0][-1]  # This gets the first Z value
+
+    # Define the range for x and y axis where the plane will be shown
+    x_range = np.linspace(np.min(x), np.max(x), 10)
+    y_range = np.linspace(np.min(y)-5, np.max(y)+5, 10)
+
+    # Create a meshgrid for the x and y axis
+    x, y = np.meshgrid(x_range, y_range)
+
+    # Create a plane at the specific Z height
+    ax.plot_surface(x, y, np.full_like(x, z_height), alpha=0.5, color='brown')  # Adjust alpha for transparency
+
+    # Setting the view angle
+    #ax.view_init(elev=0, azim=0)  # Focus on the X and Z axes
+    #ax.view_init(elev=90, azim=-90)  # Top-down view focusing on the X and Y axes
+    ax.view_init(elev=0, azim=90)  # Side view focusing on the X and Z axes
+
+    # Creating the Animation object
+    ani = animation.FuncAnimation(fig, update, frames=len(joint_data), 
+                                fargs=(joint_data, line), 
+                                interval=5, blit=True)
+
+    # To display the animation
+    plt.show()
+
+# comments 
+
+
+
+
+
+plot_gait(foot_positions, time_array, swing_phase_ratio, joint_positions_list)
