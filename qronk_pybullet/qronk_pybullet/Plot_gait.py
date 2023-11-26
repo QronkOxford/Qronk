@@ -8,6 +8,28 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits import mplot3d
 
+def normalize_3d_arrays(arrays):
+    """
+    Normalize a list of 3D arrays by subtracting the starting value of each dimension.
+
+    :param arrays: List of 3D arrays (lists or tuples) where each array is of the form [x, y, z]
+    :return: List of normalized 3D arrays
+    """
+    normalized_arrays = []
+
+    for array in arrays:
+        # Extract the start values for x, y, and z
+        start_x, start_y, start_z = arrays[0]
+
+        # Normalize each dimension
+        normalized_x = array[0] - start_x
+        normalized_y = array[1] - start_y
+        normalized_z = array[2] - start_z
+
+        # Append the normalized array to the result list
+        normalized_arrays.append([normalized_x, normalized_y, normalized_z])
+
+    return normalized_arrays
 
 def get_joint_positions(
                         B = 0, # body to hip
@@ -95,32 +117,47 @@ def simulate_foot_position_over_cycle(step_height,
         stance_phase_ratio = 1 - swing_phase_ratio  # 70% of the gait cycle
 
         if angle_lists==False:
+            
             """ 
-            # Calculate the joint angles based on the phase
+            # Walk Backwards
+            constant = 0.4 # Acts as a constant decrease on hip angle (higher constant means overall lower foot position)
+            stance_constant = 0.3 # Mitigates the parabolic curve resulting from one angle rotating faster than the other during stance_phase.
             if 0 <= leg_phase < swing_phase_ratio:
                 # Swing phase (lifting the foot and moving it forward)
-                phase_ratio = leg_phase / swing_phase_ratio
-                hip_angle = resting_hip_angle + step_length * phase_ratio
-                knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)
+                phase_ratio = leg_phase / (swing_phase_ratio)
+                hip_angle = resting_hip_angle + step_length * phase_ratio - constant
+                knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))
+                shoulder_angle = 0
             else:
                 # Stance phase (foot is on the ground and dragging back)
-                #phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
-                hip_angle = resting_hip_angle + step_length * (1 - phase_ratio)
-                knee_angle = resting_knee_angle """
+                phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
+                hip_angle = resting_hip_angle + step_length * (1 - phase_ratio) - constant
+                shoulder_angle = 0
+                if phase_ratio < 0.5:
+                    knee_angle =  resting_knee_angle - (phase_ratio*stance_constant) 
+                else:
+                    knee_angle =  resting_knee_angle - ((1-phase_ratio)*stance_constant)
 
+            """
+            # Walk forwards
+            constant = 0.1 # Acts as a constant decrease on hip angle (higher constant means overall lower foot position)
+            stance_constant = 0.35 # Mitigates the curve resulting from one angle rotating faster than the other during stance_phase.
             if 0 <= leg_phase < swing_phase_ratio:
                 # Swing phase (lifting the foot and moving it forward)
-                phase_ratio = leg_phase / swing_phase_ratio
-                hip_angle = resting_hip_angle - (step_length * phase_ratio)  # Moving forward
-                knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
+                phase_ratio = leg_phase / (swing_phase_ratio)
+                hip_angle = resting_hip_angle - (step_length * phase_ratio - constant)
+                knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))
                 shoulder_angle = 0
-
-            elif swing_phase_ratio <= leg_phase < 1:
+            else:
                 # Stance phase (foot is on the ground and dragging back)
-                phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
-                hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio)) # Moving back to the starting position
-                knee_angle = resting_knee_angle  # Keep the foot on the ground 
+                phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
+                hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio) - constant)
                 shoulder_angle = 0
+                if phase_ratio < 0.5:
+                    knee_angle =  resting_knee_angle - (phase_ratio*stance_constant)
+                else:
+                    knee_angle =  resting_knee_angle - ((1-phase_ratio)*stance_constant)
+            
         else: 
             shoulder_angle = shoulder_angle_list[t],
             hip_angle = hip_angle_list[t]
@@ -151,8 +188,8 @@ time_array, foot_positions, joint_positions_list = simulate_foot_position_over_c
     step_height=0.5, 
     step_length=0.5, 
     walking_speed=2, 
-    resting_hip_angle=-0.5, 
-    resting_knee_angle=0.7, 
+    resting_hip_angle=0.5, 
+    resting_knee_angle=-0.7, 
     gait_cycle_time=gait_cycle_time, 
     total_time=gait_cycle_time,  # Plotting for one cycle
     swing_phase_ratio=swing_phase_ratio,
@@ -161,19 +198,60 @@ time_array, foot_positions, joint_positions_list = simulate_foot_position_over_c
 
 def plot_gait(foot_positions, time_array, swing_phase_ratio, joint_positions_list):
 
+    foot_positions = normalize_3d_arrays(foot_positions)
+    
+    x_positions = [pos[0] for pos in foot_positions]
+    y_positions = [pos[1] for pos in foot_positions]
+    z_positions = [pos[2] for pos in foot_positions]
+
     # Plotting gait patter overview 
     fig = plt.figure(figsize=(15, 6))
-    # Add the first 2D subplot on the left (1 row, 3 columns, position 1)
-    ax0 = fig.add_subplot(1, 2, 1)
-    ax0.plot(time_array, foot_positions, label='foot position xyz')
+    # Add the first 2D subplot on the left (3 row, 2 columns, position 1)
+    ax0 = fig.add_subplot(3, 2, 1)
+    ax0.plot(time_array, x_positions, label='X', color='C0')
     ax0.axvline(x=(max(time_array)*swing_phase_ratio), ls="--", color='k', label='End of Swing Phase')
 
     ax0.set_xlabel('Time (s)')
     ax0.set_ylabel('Centimeters')
     #ax.title('Foot Positions Over One Gait Cycle')
-    ax0.legend(labels=['X - Forward motion', 'Y - Side motion', 'Z - Height', 'End of Swing Phase'])
+    ax0.legend(labels=['X - Forward motion', 'End of Swing Phase'])
     ax0.grid(True)
 
+    # Add the first 2D subplot on the left (3 row, 2 columns, position 3)
+    ax2 = fig.add_subplot(3, 2, 3)
+    ax2.plot(time_array, y_positions, label='Y', color='C1')
+    ax2.axvline(x=(max(time_array)*swing_phase_ratio), ls="--", color='k', label='End of Swing Phase')
+
+    ax2.set_xlabel('Time (s)')
+    ax2.set_ylabel('Centimeters')
+    #ax.title('Foot Positions Over One Gait Cycle')
+    ax2.legend(labels=['Y - Side motion','End of Swing Phase'])
+    ax2.grid(True)
+
+    # Add the first 2D subplot on the left (3 row, 2 columns, position 5)
+    ax3 = fig.add_subplot(3, 2, 5)
+    ax3.plot(time_array, z_positions, label='Z', color='C2')
+    ax3.axvline(x=(max(time_array)*swing_phase_ratio), ls="--", color='k', label='End of Swing Phase')
+
+    ax3.set_xlabel('Time (s)')
+    ax3.set_ylabel('Centimeters')
+    #ax.title('Foot Positions Over One Gait Cycle')
+    ax3.legend(labels=['Z - Height', 'End of Swing Phase'])
+    ax3.grid(True)
+
+    # Hide spines
+    ax0.spines[['right', 'top']].set_visible(False)
+    ax2.spines[['right', 'top']].set_visible(False)
+    ax3.spines[['right', 'top']].set_visible(False)
+
+    # Find the overall min and max for uniform scaling
+    min_pos = min(min(x_positions), min(y_positions), min(z_positions))
+    max_pos = max(max(x_positions), max(y_positions), max(z_positions))
+
+    # Set equal axis 
+   # ax0.set_ylim(min_pos-2, max_pos+2)
+   # ax2.set_ylim(min_pos-2, max_pos+2)
+   # ax3.set_ylim(min_pos-2, max_pos+2)
 
     joint_data = np.array(joint_positions_list)
 
@@ -242,11 +320,15 @@ def plot_gait(foot_positions, time_array, swing_phase_ratio, joint_positions_lis
     ani = animation.FuncAnimation(fig, update, frames=len(joint_data), 
                                 fargs=(joint_data, line), 
                                 interval=5, blit=True)
+    
+    # remove color of axis planes 
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
 
     # To display the animation
+    plt.tight_layout()
     plt.show()
-
-# comments 
 
 
 
