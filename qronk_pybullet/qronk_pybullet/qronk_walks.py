@@ -5,6 +5,13 @@ import os
 import math
 import numpy as np 
 from ament_index_python import get_package_share_directory
+
+# TODO
+# 0. invert front to back to align with udrf file - Done!
+# 1. fix backwards gait sliding
+# 2. connect to ros 
+# 3. calculate centre of gravity to enable balancing
+
 # Connect to PyBullet
 physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -65,17 +72,17 @@ legs = {
 
 # Parameters for the camera
 camera_distance = 1
-camera_yaw = 50
+camera_yaw = -50
 camera_pitch = -35
 camera_target_position = [0, 0, 0]  # This will be updated to the robot's position
 
 
-# Walking parameters
+# Walking parameters (negative angles are forwards)
 step_height = 0.5
 step_length = 0.5
 walking_speed = 2  # A lower speed to give more control over the gait
-resting_hip_angle = -0.5  # This is a slight angle for the 'resting' position of the hip joint
-resting_knee_angle = 0.7  # This is a slight angle for the 'resting' position of the knee joint
+resting_hip_angle = 0.5  # This is a slight angle for the 'resting' position of the hip joint
+resting_knee_angle = -0.7  # This is a slight angle for the 'resting' position of the knee joint
 
 
 # Constants for key bindings
@@ -89,7 +96,8 @@ def walk_forward(step_height=step_height,
                  walking_speed=walking_speed,
                  resting_hip_angle=resting_hip_angle,
                  resting_knee_angle=resting_knee_angle):
-     # Get the current simulation time
+
+    # Get the current simulation time
     t = time.time()
 
     # Calculate normalized time in the gait cycle [0, 1)
@@ -123,18 +131,35 @@ def walk_forward(step_height=step_height,
         swing_phase_ratio = 0.3  # 30% of the gait cycle
         stance_phase_ratio = 1 - swing_phase_ratio  # 70% of the gait cycle
 
-        # Calculate the target angles based on the phase
+             # Calculate the target angles based on the phase
         if 0 <= leg_phase < swing_phase_ratio:
             # Swing phase (lifting the foot and moving it forward)
             phase_ratio = leg_phase / swing_phase_ratio
-            hip_angle = resting_hip_angle + step_length * phase_ratio  # Moving forward
-            knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)  # Lifting up
+            hip_angle = resting_hip_angle - (step_length * phase_ratio)  # Moving forward
+            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
+
         elif swing_phase_ratio <= leg_phase < 1:
             # Stance phase (foot is on the ground and dragging back)
             phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
-            hip_angle = resting_hip_angle + step_length * (1 - phase_ratio)  # Moving back to the starting position
-            knee_angle = resting_knee_angle  # Keep the foot on the ground
-
+            hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio)) # Moving back to the starting position
+            knee_angle = resting_knee_angle  # Keep the foot on the ground 
+            
+        """ 
+        constant = 0.1
+        if 0 <= leg_phase < swing_phase_ratio:
+            # Swing phase (lifting the foot and moving it forward)
+            phase_ratio = leg_phase / (swing_phase_ratio)
+            hip_angle = resting_hip_angle - (step_length * phase_ratio) - constant
+            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))
+        else:
+            # Stance phase (foot is on the ground and dragging back)
+            phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
+            hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio) - constant)
+            if phase_ratio < 0.5:
+                knee_angle =  resting_knee_angle + (phase_ratio*0.3)
+            else:
+                knee_angle =  resting_knee_angle + ((1-phase_ratio)*0.3)
+        """
         # Ankle angle could be set to keep the foot parallel to the ground
         ankle_angle = -knee_angle / 2  # Adjust this to maintain foot parallelism
 
@@ -156,11 +181,13 @@ def walk_forward(step_height=step_height,
                                     controlMode=p.POSITION_CONTROL,
                                     targetPosition=target_angle)
             
+        
+
 def walk_backward(step_height=0.5, 
                   step_length=0.5,
                   walking_speed=2,
-                  resting_hip_angle = -0.2,
-                  resting_knee_angle= 0.8):
+                  resting_hip_angle = 0.2,
+                  resting_knee_angle= -0.8):
     # Get the current simulation time
     t = time.time()
 
@@ -192,20 +219,36 @@ def walk_backward(step_height=0.5,
                 continue  # Skip the rest of the loop for this joint
 
         # Define swing and stance phases
-        swing_phase_ratio = 0.3  # 30% of the gait cycle
+        swing_phase_ratio = 0.2  # 30% of the gait cycle
         stance_phase_ratio = 1 - swing_phase_ratio  # 70% of the gait cycle
 
+        """         
         # Calculate the target angles based on the phase
         if 0 <= leg_phase < swing_phase_ratio:
             # Swing phase (lifting the foot and moving it backward)
             phase_ratio = leg_phase / swing_phase_ratio
-            hip_angle = resting_hip_angle - (step_length * phase_ratio)  # Moving backward
-            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
+            hip_angle = resting_hip_angle + (step_length * phase_ratio)  # Moving backward
+            knee_angle = resting_knee_angle + (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
         elif swing_phase_ratio <= leg_phase < 1:
             # Stance phase (foot is on the ground and dragging forward)
             phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
-            hip_angle = resting_hip_angle - (step_length * (1 - phase_ratio))  # Moving forward to the starting position
-            knee_angle = resting_knee_angle  # Keep the foot on the ground
+            hip_angle = resting_hip_angle + (step_length * (1 - phase_ratio))  # Moving forward to the starting position
+            knee_angle = resting_knee_angle  # Keep the foot on the ground """
+
+        constant = 0.1
+        if 0 <= leg_phase < swing_phase_ratio:
+            # Swing phase (lifting the foot and moving it forward)
+            phase_ratio = leg_phase / (swing_phase_ratio)
+            hip_angle = resting_hip_angle + step_length * phase_ratio - constant
+            knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)
+        else:
+            # Stance phase (foot is on the ground and dragging back)
+            phase_ratio = (leg_phase - swing_phase_ratio) / (1 - swing_phase_ratio)
+            hip_angle = resting_hip_angle + step_length * (1 - phase_ratio) - constant
+            if phase_ratio < 0.5:
+                knee_angle =  resting_knee_angle + (phase_ratio*0.3)
+            else:
+                knee_angle =  resting_knee_angle + ((1-phase_ratio)*0.3)
 
         # Ankle angle could be set to keep the foot parallel to the ground
         ankle_angle = -knee_angle / 2  # Adjust this to maintain foot parallelism
@@ -229,10 +272,14 @@ def walk_backward(step_height=0.5,
                                     targetPosition=target_angle)
 
 
-def turn(side_to_turn, step_length=0.5, 
-         turning_speed=2, resting_hip_angle=-0.5, 
-         resting_knee_angle=0.7, step_height=0.5, 
-         fixed_chassis_shoulder_angle=0):
+def turn(side_to_turn, 
+         step_length=0.5, 
+         turning_speed=2, 
+         resting_hip_angle=0.5, 
+         resting_knee_angle=-0.7,
+         step_height=0.5, 
+         fixed_chassis_shoulder_angle=0,
+         ):
     
     # Get the current simulation time
     t = time.time()
@@ -242,19 +289,15 @@ def turn(side_to_turn, step_length=0.5,
     gait_phase = (t % gait_cycle_time) / gait_cycle_time
 
     # Set turn side step scalar 
-    if side_to_turn == 'left':
-        step_scalar = 0
     if side_to_turn == 'right':
+        step_scalar = 0
+    if side_to_turn == 'left':
         step_scalar = 1
 
     # Loop through each leg and set the position for each joint
     for leg_name, joint_names in legs.items():
-        if leg_name in ['front_right','back_right']:
-            # Longer stride for non-turn side 
-            # OBS! appear to work the other way around (long right side step returns long left step)
-            # This could be a potetnial problem with
-            #  - the URDF file 
-            #  - direction of rotation
+        if leg_name in ['front_right', 'back_right']:
+            # Shorter stride for turn side 
             current_step_length = step_length * step_scalar
         else:
             current_step_length = step_length * (1-step_scalar)
@@ -285,12 +328,12 @@ def turn(side_to_turn, step_length=0.5,
         if 0 <= leg_phase < swing_phase_ratio:
             # Swing phase (lifting the foot and moving it forward)
             phase_ratio = leg_phase / swing_phase_ratio
-            hip_angle = resting_hip_angle + current_step_length * phase_ratio  # Moving forward
-            knee_angle = resting_knee_angle + step_height * math.sin(math.pi * phase_ratio)  # Lifting up
+            hip_angle = resting_hip_angle - (current_step_length * phase_ratio)  # Moving forward
+            knee_angle = resting_knee_angle - (step_height * math.sin(math.pi * phase_ratio))  # Lifting up
         elif swing_phase_ratio <= leg_phase < 1:
             # Stance phase (foot is on the ground and dragging back)
             phase_ratio = (leg_phase - swing_phase_ratio) / stance_phase_ratio
-            hip_angle = resting_hip_angle + current_step_length * (1 - phase_ratio)  # Moving back to the starting position
+            hip_angle = resting_hip_angle - (current_step_length * (1 - phase_ratio))  # Moving back to the starting position
             knee_angle = resting_knee_angle  # Keep the foot on the ground
 
         # Ankle angle could be set to keep the foot parallel to the ground
@@ -338,8 +381,7 @@ while True: # Loop indefinitely
     if KEY_LEFT in keys and keys[KEY_LEFT] & p.KEY_IS_DOWN:
         turn(side_to_turn='left')
 
-    
-    
+
     # Update the camera position
     qronk_position, qronk_orientation = p.getBasePositionAndOrientation(qronkId)
     camera_target_position = qronk_position
