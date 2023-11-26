@@ -246,6 +246,10 @@ def plot_gait(foot_positions, time_array, swing_phase_ratio, joint_positions_lis
     # To display the animation
     plt.show()
 
+# comments 
+
+
+
 
 
 plot_gait(foot_positions, time_array, swing_phase_ratio, joint_positions_list)
