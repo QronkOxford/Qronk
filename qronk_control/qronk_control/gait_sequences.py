@@ -57,9 +57,7 @@ class SemicircleCrawl:
         FR_origin = (0, -3.5, -15)
         BR_origin = (0, -3.5, -15)
 
-        FL_coords = 
-
-
+        FL_coords = []
 
 
 class Stand:
