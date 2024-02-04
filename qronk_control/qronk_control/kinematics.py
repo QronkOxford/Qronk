@@ -129,5 +129,4 @@ def inverseKinematics(side, Je):
     th3 = -2 * a4
 
     JointAngles = [th1, th2, th3]
-
     return JointAngles
