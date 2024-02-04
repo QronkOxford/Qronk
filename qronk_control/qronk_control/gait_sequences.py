@@ -50,4 +50,36 @@ class SemicircleCrawl:
     # * Consider where the origin (the location of the foot when the sequence starts) should be. 
     # * Also consider whether we should also find the angular velocity here. 
     def gait(self):
+        
+        # * Arbitrarily decided starting values
+        FL_origin = (0, 3.5, -15)
+        BL_origin = (0, 3.5, -15)
+        FR_origin = (0, -3.5, -15)
+        BR_origin = (0, -3.5, -15)
+
+        FL_coords = 
+
+
+
+
+class Stand:
+
+    def __init__(self):
+        pass
+
+    def trajectory(self):
+        pass
+
+    def gait(self):
+        pass
+
+class Sit: 
+
+    def __init__(self):
+        pass
+
+    def trajectory(self):
+        pass
+
+    def gait(self):
         pass
