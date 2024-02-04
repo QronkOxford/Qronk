@@ -13,15 +13,20 @@ L2 = 10  # upper-leg to lower-leg
 L3 = 10  # lower-leg to foot
 
 
-def forwardKinematicsLeft(th1, th2, th3):
+def forwardKinematics(side, angles):
     """
-    Calculates the forward kinematics of the left leg of the robot.
-    Input: th1, th2, th3 (joint angles in radians)
+    Calculates the forward kinematics of the robot.
+    Input: side (str "left" or "right"), angles (list of joint angles in radians in the form [th1, th2, th3])
     Output: JointPos (list of joint positions in the form [J1, J2, J3, Je])
 
     For more information on the derivation of the forward kinematics, follow the link below.
     https://www.rosroboticslearning.com/forward-kinematics
     """
+
+    if side not in ["left", "right"]:
+        raise ValueError("Invalid side. Must be 'right' or 'left'.")
+
+    th1, th2, th3 = angles
 
     # Body to hip
     T01_translation = np.array([[1, 0, 0, B], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
@@ -37,7 +42,12 @@ def forwardKinematicsLeft(th1, th2, th3):
 
     # Hip to upper-leg
     T12_translation = np.array(
-        [[1, 0, 0, 0], [0, 1, 0, L1], [0, 0, 1, 0], [0, 0, 0, 1]]
+        [
+            [1, 0, 0, 0],
+            [0, 1, 0, (L1 if side == "left" else -L1)],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ]
     )
     T12_rotation = np.array(
         [
@@ -82,23 +92,28 @@ def forwardKinematicsLeft(th1, th2, th3):
     return JointPos
 
 
-def inverseKinematicsLeft(Je):
+def inverseKinematics(side, Je):
     """
-    Calculates the inverse kinematics of the left leg of the robot.
-    Input: Je (end effector position in the form [x, y, z])
-    Output: th1, th2, th3 (joint angles in radians)
+    Calculates the inverse kinematics of the robot.
+    Input: side (str "left" or "right"), Je (end effector position in the form [x, y, z])
+    Output: JointAngles (list of joint angles in radians in the form [th1, th2, th3])
 
     For more information on the derivation of the inverse kinematics, see /notebooks/kinematics.ipynb
     """
 
+    if side not in ["left", "right"]:
+        raise ValueError("Invalid side. Must be 'right' or 'left'.")
+
     # Extract the x, y, z coordinates of the end effector position
     x, y, z = Je
+    y = -y if side == "right" else y
 
     # Find th1 by considering the front view of the leg
     d1yz = sqrt(y**2 + z**2)
     a1 = abs(arccos(L1 / d1yz))
     a2 = arctan2(z, y)
     th1 = a1 + a2
+    th1 = -th1 if side == "right" else th1
 
     # Find the required lengths from the 3D view
     d1xyz = sqrt(x**2 + y**2 + z**2)
@@ -113,4 +128,6 @@ def inverseKinematicsLeft(Je):
     th2 = a3 + a4
     th3 = -2 * a4
 
-    return th1, th2, th3
+    JointAngles = [th1, th2, th3]
+
+    return JointAngles
