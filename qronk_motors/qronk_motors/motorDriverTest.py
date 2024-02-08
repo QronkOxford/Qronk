@@ -19,21 +19,22 @@ pca.frequency = 50
 # match the stall points of the servo.
 # This is an example for the Sub-micro servo: https://www.adafruit.com/product/2201
 # servo7 = servo.Servo(pca.channels[7], min_pulse=580, max_pulse=2350)
-n = 1
-servos = n*[None]
+sleepTime = 0
+n = 3
+servos = []
 for i in range(n):
-    servos = servo.Servo(pca.channels[i])
+    servos.append(servo.Servo(pca.channels[i]))
 
 # We sleep in the loops to give the servo time to move into position.
 for i in range(180):
     for testServo in servos:
         testServo.angle = i
-    time.sleep(0.03)
+    time.sleep(sleepTime)
 
 for i in range(180):
     for testServo in servos:
         testServo.angle = 180 - i
-    time.sleep(0.03)
+    time.sleep(sleepTime)
 
 #Close the I2C connection
 pca.deinit()
