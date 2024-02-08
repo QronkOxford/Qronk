@@ -22,10 +22,10 @@ class JointSub(Node):
             self.listener_callback,
             10) #Sub to the joint state message
         self.subscription  # prevent unused variable warning
-        i2c = busio.I2C(SCL, SDA) #connect to driver board
-        pca = PCA9685(i2c) 
-        pca.frequency = 50
-        self.servos = [servo.Servo(i) for i in range(1,nServos)] #Initialize servos
+        self.i2c = busio.I2C(SCL, SDA) #connect to driver board
+        self.pca = PCA9685(self.i2c) 
+        self.pca.frequency = 50
+        self.servos = [servo.Servo(self.pca.channels[i]) for i in range(nServos)] #Initialize servos
 
     def listener_callback(self, msg):
         self.pos = msg.position #Store names and positions
@@ -41,6 +41,9 @@ class JointSub(Node):
                 s.angle = -1
             else:
                 s.angle = p*(180/pi) #Set servo angle for all values inbetween
+    
+    def closeBus(self): #Close the bus when finished
+        self.pca.deinit()
 
 def main(args=None):
     n = 3 #Number of servos, Don't overload the board just yet!
@@ -50,6 +53,8 @@ def main(args=None):
         #Get values over and over
         rclpy.spin_once(minimal_subscriber)
         minimal_subscriber.positionServo(n) #Take revised values and send to servos
+    rclpy.spin_once(minimal_subscriber) #Close the bus
+    minimal_subscriber.closeBus()
     minimal_subscriber.destroy_node()
     rclpy.shutdown()
 
