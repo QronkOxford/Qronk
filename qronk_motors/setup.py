@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'state2servo = qronk_motors.state2servo:main'
+            'injectMsgs = qronk_motors.injectMsgs:main'
         ],
     },
 )
