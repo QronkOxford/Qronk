@@ -10,6 +10,7 @@
     <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" />
         
     <!--Launch joint state subscriber, otherwise same as ~/qronk_ws/src/qronk_description/launch/display.launch.xml-->
+    <node pkg="qronk_motors" exec="injectMsgs"/>
     <node pkg="qronk_motors" exec="state2servo" output="screen" />
 
 </launch>
