@@ -25,7 +25,7 @@ class JointSub(Node):
 
         self.pca.frequency = 50 # Set PCA frequncy to 50Hz
         self.topic_freq = 30 # Hz
-        self.max_speed = 50 * 2 * pi # Angular vel (RPM)
+        self.max_speed = 50 # Angular vel
         
         # Initialize continuous servos
         self.servos = [servo.ContinuousServo(self.pca.channels[i],
@@ -40,29 +40,30 @@ class JointSub(Node):
         self.vels = msg.velocity #Measured in RPM
         _efforts = msg.effort
 
-        #self.pos_old = self.pos # Store previous timestep position
-        #self.pos = msg.pos # Store new timestep position
-        #self.name = msg.name # Store name
+        self.pos_old = self.pos # Store previous timestep position
+        self.pos = msg.pos # Store new timestep position
+        self.name = msg.name # Store name
 
     def throttleServo(self,_speed_ratio,servoID: int = 0):
         # TODO: Agree on topic puiblishing frequency and make sure publishers stick to it
         #_speed_ratio = 100 / self.max_speed # TODO: 100 here is placeholder
-        self.servos[servoID].throttle = _speed_ratio
+        self.servos[servoID].throttle(_speed_ratio)
+        pass
 
     def throttleServos(self,servos):
+        speed_ratios = servos*[None]
         for i in range(len(self.vels)):  
             #Calculate speed ratio
-            speed_ratio = self.vels[i]/self.max_speed
-            self.get_logger().info('Speed ratio:"%.3f"' % speed_ratio)
+            speed_ratio = self.vels(i)/self.max_speed
             #Keep within limits
             if speed_ratio > 1:
                 speed_ratio = 1
             elif speed_ratio < -1:
                 speed_ratio = -1
+            speed_ratios[i] = speed_ratio 
             #Send to servo
-            #self.throttleServo(speed_ratio,i)
-            self.servos[i].throttle = speed_ratio
-
+            self.throttleServo(speed_ratios[i],i)
+        pass
 
     def positionServo(self,nServos):
         pass
@@ -78,7 +79,10 @@ class JointSub(Node):
                 s.angle = p*(180/pi) #Set servo angle for all values inbetween
         '''
    
-    def closeBus(self): #Close the bus when finished
+    def closeBus(self,servos): #Close the bus when finished
+        speeds = servos*[0] #Stop servos
+        for i in len(speeds):
+            self.throttleServo(speeds(i),i)
         self.pca.deinit()
 
 def main(args=None):
@@ -90,7 +94,7 @@ def main(args=None):
         rclpy.spin_once(minimal_subscriber)
         minimal_subscriber.throttleServos(n) #Take revised values and send to servos
     rclpy.spin_once(minimal_subscriber) #Close the bus
-    minimal_subscriber.closeBus()
+    minimal_subscriber.closeBus(n)
     minimal_subscriber.destroy_node()
     rclpy.shutdown()
 
