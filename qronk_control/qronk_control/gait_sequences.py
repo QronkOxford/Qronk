@@ -98,6 +98,6 @@ def angle_derivative(angles, dt):
     
     velocities = []
     for i in range(len(angles)-1):
-        derivative = [(angles[i+1][j] - angles[i][j])/dt for j in range(len(angles[i]))]
+        derivative = [(angles[i+1][j] - angles[i][j])/dt for j in range(len(angles[i]))] * (2*pi/60) # Angular vel [rpm]
         velocities.append(derivative)
     return velocities
