@@ -3,81 +3,101 @@ gait_sequences.py: generates the gait sequences for the robot.
 """
 
 from numpy import pi, cos, sin
-
-# * We will create a class for each type of gait sequence
-class SemicircleCrawl:
-
-    def __init__(self, period=100, swing_phase_ratio=0.25, radius=2.5):
-        """
-        Args:
-            period (int, optional): Period of the gait sequence. Defaults to 100.
-            swing_phase_ratio (float, optional): Ratio of the period that the swing phase occupies. Defaults to 0.25.
-            radius (float, optional): Radius of the semicircle. Defaults to 2.5.
-        """
-
-        self.period = period
-        self.swing_phase_ratio = swing_phase_ratio
-        self.radius = radius
+from qronk_control.kinematics import inverseKinematics
 
 
-    def trajectory(self):
-        """
-        Generates a semicircle trajectory starting at (0,0,0).
+def test_leg(frames=10, reach=5, origin=(0, 3.5, -12)):
+    """
+    Moves the FL leg in a straight line in each directions to test the leg's movement.
 
-        Returns:
-            list: List of coordinates for the trajectory. 
-        """
+    Args:
+        frames (int): The number of frames to move the leg.
+        reach (int): The distance reached by the leg. 
+        origin (tuple): The starting position of the leg.
+    """    
 
-        swing_time = self.period * self.swing_phase_ratio
-        ground_time = self.period * (1 - self.swing_phase_ratio)
-        coords = []
+    # Unpack the origin 
+    x, y, z = origin
 
-        for t in range(self.period):
-            if t < swing_time:
-                x = self.radius - self.radius * cos(pi * t / swing_time)
-                y = 0
-                z = self.radius * sin(pi * t / swing_time)
-            else:
-                x = self.radius + self.radius - 2 * self.radius * (t - swing_time) / ground_time
-                y = 0
-                z = 0
-            coords.append((x, y, z))
-
-        return coords
-
-    # * Create a gait method that returns the list of foot coordinates for each foot.
-    # * The joint angles will also have to be found by importing the kinematics module. 
-    # * Consider where the origin (the location of the foot when the sequence starts) should be. 
-    # * Also consider whether we should also find the angular velocity here. 
-    def gait(self):
+    # Moves the leg + and - in x, y, and z directions
+    coords = []
+    for i in range(frames):
+        x += reach/frames
+        coords.append((x, y, z))
+    for i in range(frames):
+        x -= reach/frames
+        coords.append((x, y, z))
+    for i in range(frames):
+        y += reach/frames
+        coords.append((x, y, z))
+    for i in range(frames):
+        y -= reach/frames
+        coords.append((x, y, z))
+    for i in range(frames):
+        z += reach/frames
+        coords.append((x, y, z))
+    for i in range(frames):
+        z -= reach/frames
+        coords.append((x, y, z))
+    
+    # Converts the coordinates to joint angles
+    angles = []
+    for coord in coords:
+        invKin = inverseKinematics("left", coord)
+        angle = [invKin[0], invKin[1], invKin[2], 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        angles.append(angle)
         
-        # * Arbitrarily decided starting values
-        FL_origin = (0, 3.5, -15)
-        BL_origin = (0, 3.5, -15)
-        FR_origin = (0, -3.5, -15)
-        BR_origin = (0, -3.5, -15)
-
-        FL_coords = []
+    return angles
 
 
-class Stand:
+def semicircle_crawl(period=100, swing_phase_ratio=0.25, radius=2.5):
 
-    def __init__(self):
-        pass
+    # Moves forward in a semicircle trajectory to represent swing
+    def swing(frames):
+        swing_coords = []
+        for t in range(frames):
+            x = radius - radius * cos(pi * t / frames)
+            y = 0
+            z = radius * sin(pi * t / frames)
+            swing_coords.append((x, y, z))
+        return swing_coords
 
-    def trajectory(self):
-        pass
+    # Moves backwards in a straight line to represent stance
+    def stance(frames):
+        stance_coords = []
+        for t in range(frames):
+            x = radius + radius - 2 * radius * t / frames
+            y = 0
+            z = 0
+            stance_coords.append((x, y, z))
+        return stance_coords
+    
+    coords = []
 
-    def gait(self):
-        pass
+    # * Arbitrarily decided starting values
+    FL_origin = (0, 3.5, -15)
+    BL_origin = (0, 3.5, -15)
+    FR_origin = (0, -3.5, -15)
+    BR_origin = (0, -3.5, -15)
 
-class Sit: 
+    return coords
 
-    def __init__(self):
-        pass
 
-    def trajectory(self):
-        pass
+def stand():
+    pass
 
-    def gait(self):
-        pass
+
+def sit():
+    pass
+
+
+def angle_derivative(angles, dt):
+    """
+    Returns the derivative of the angles at each frame.
+    """
+    
+    velocities = []
+    for i in range(len(angles)-1):
+        derivative = [(angles[i+1][j] - angles[i][j])/dt for j in range(len(angles[i]))]
+        velocities.append(derivative)
+    return velocities

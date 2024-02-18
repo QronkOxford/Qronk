@@ -23,7 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'planned_gait = qronk_control.walk_planned:main',
+            'planned_gait = qronk_control.planned_gait:main',
             'gait_sequences = qronk_control.gait_sequences:main',
             'kinematics = qronk_control.kinematics:main',
         ],
