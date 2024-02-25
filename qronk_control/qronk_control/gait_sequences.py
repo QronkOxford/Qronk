@@ -44,7 +44,7 @@ def test_leg(frames=10, reach=5, origin=(0, 3.5, -12)):
     angles = []
     for coord in coords:
         invKin = inverseKinematics("left", coord)
-        angle = [invKin[0], invKin[1], invKin[2], 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        angle = [invKin[0], invKin[1], invKin[2], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         angles.append(angle)
         
     return angles
@@ -74,11 +74,21 @@ def semicircle_crawl(period=100, swing_phase_ratio=0.25, radius=2.5):
     
     coords = []
 
+    FL_coords = []
+    BL_coords = []
+    FR_coords = []
+    BR_coords = []
+
     # * Arbitrarily decided starting values
     FL_origin = (0, 3.5, -15)
     BL_origin = (0, 3.5, -15)
     FR_origin = (0, -3.5, -15)
     BR_origin = (0, -3.5, -15)
+
+    # * 1. body slightly to the back so the centre of gravity is behind
+    
+
+    # * 2. (FL - BR - FR - BL) repeats as a cycle
 
     return coords
 
@@ -101,3 +111,5 @@ def angle_derivative(angles, dt):
         derivative = [(angles[i+1][j] - angles[i][j])/dt for j in range(len(angles[i]))] * (2*pi/60) # Angular vel [rpm]
         velocities.append(derivative)
     return velocities
+
+print(test_leg()[3])
