@@ -6,7 +6,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
-from qronk_interfaces.msg import JointVelocity
+#from qronk_interfaces.msg import JointVelocity
 from board import SCL, SDA
 import busio
 from adafruit_motor import servo
@@ -19,7 +19,7 @@ class JointSub(Node):
         super().__init__('JointSub')
         
         # Subscribe to joint_states topic
-        self.create_subscription(JointVelocity,'joint_velocity',self.listener_callback,10)
+        self.create_subscription(JointState,'joint_states',self.listener_callback,10)
         
         _i2c = busio.I2C(SCL, SDA) # Connect to i2c bus
         self.pca = PCA9685(_i2c) # Create PCA9685 instance
