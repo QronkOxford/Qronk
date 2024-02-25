@@ -29,17 +29,18 @@ class JointSub(Node):
         self.max_speed = 50 # Angular vel
         
         # Initialize continuous servos
-        self.servos = [servo.ContinuousServo(self.pca.channels[i],
-                                             min_pulse = 1300, # 
-                                             max_pulse = 1700) for i in range(nServos)]
+        self.servos = [servo.Servo(self.pca.channels[i],
+                                             min_pulse = 500, # 
+                                             max_pulse = 2500, 
+                                             actuation_range = 180) for i in range(nServos)]
 
     def listener_callback(self, msg):
         # Unpack msg data
         _vels = msg.velocity # Angular [rpm]
         _speed_ratios = [vel / self.max_speed for vel in _vels]
+        _pos = msg.position # Angles [rad]
 
-        # Throttle servo
-        self.throttleServos(_speed_ratios)
+        self.positionServo(_pos)
 
     def throttleServo(self, speed_ratio, servoID: int = 0):
         #_speed_ratio = self.vel / self.max_speed
@@ -59,6 +60,17 @@ class JointSub(Node):
 
             # Send to servo
             self.throttleServo(_speed_ratio, i)
+
+    def positionServo(self,pos):
+        for i in range(len(self.servos)):
+            p = pos[i]
+            s = self.servos[i]
+            if p > pi: #Maximum value of 180 deg - Need to tune this
+                s.angle = 1
+            elif p < 0: #Minimum of 0 deg - Need to tune this
+                s.angle = -1
+            else:
+                s.angle = p*(180/pi) #Set servo angle for all values inbetween
    
     def closeBus(self,servos): #Close the bus when finished
         speeds = servos*[0] #Stop servos
