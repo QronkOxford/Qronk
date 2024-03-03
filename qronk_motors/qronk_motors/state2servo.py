@@ -6,6 +6,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
+#from qronk_interfaces.msg import JointVelocity
 from board import SCL, SDA
 import busio
 from adafruit_motor import servo
@@ -28,73 +29,62 @@ class JointSub(Node):
         self.max_speed = 50 # Angular vel
         
         # Initialize continuous servos
-        self.servos = [servo.ContinuousServo(self.pca.channels[i],
-                                             min_pulse = 1300, # 
-                                             max_pulse = 1700) for i in range(nServos)]
+        self.servos = [servo.Servo(self.pca.channels[i],
+                                             min_pulse = 500, # 
+                                             max_pulse = 2500, 
+                                             actuation_range = 180) for i in range(nServos)]
 
     def listener_callback(self, msg):
         # Unpack msg data
-        _timestamp = msg.header # Note header contains timestamp when joint angle was calculated
-        _names = msg.name # TODO: Agree on servo naming convention (I think simple 1, 2,3 or servo1, servo2, servo3 would be good)
-        _positions = msg.position
-        self.vels = msg.velocity #Measured in RPM
-        _efforts = msg.effort
+        _vels = msg.velocity # Angular [rpm]
+        _speed_ratios = [vel / self.max_speed for vel in _vels]
+        _pos = msg.position # Angles [rad]
 
-        #self.pos_old = self.pos # Store previous timestep position
-        #self.pos = msg.pos # Store new timestep position
-        #self.name = msg.name # Store name
+        self.positionServo(_pos)
 
-    def throttleServo(self,_speed_ratio,servoID: int = 0):
-        # TODO: Agree on topic puiblishing frequency and make sure publishers stick to it
-        #_speed_ratio = 100 / self.max_speed # TODO: 100 here is placeholder
-        self.servos[servoID].throttle = _speed_ratio
+    def throttleServo(self, speed_ratio, servoID: int = 0):
+        #_speed_ratio = self.vel / self.max_speed
+        self.servos[servoID].throttle = speed_ratio
         pass
 
-    def throttleServos(self,servos):
+    def throttleServos(self, speed_ratios):
         for i in range(len(self.vels)):  
-            #Calculate speed ratio
-            speed_ratio = self.vels[i]/self.max_speed
-            #Keep within limits
-            if speed_ratio > 1:
-                speed_ratio = 1
-            elif speed_ratio < -1:
-                speed_ratio = -1
-            #Send to servo
-            self.throttleServo(speed_ratio, i)
-        pass
+            # Calculate speed ratio
+            _speed_ratio = speed_ratios
 
-    def positionServo(self,nServos):
-        pass
-        '''
-        for i in range(nServos):
-            p = self.pos[i]
+            # Keep within limits
+            if _speed_ratio > 1:
+                _speed_ratio = 1
+            elif _speed_ratio < -1:
+                _speed_ratio = -1
+
+            # Send to servo
+            self.throttleServo(_speed_ratio, i)
+
+    def positionServo(self,pos):
+        for i in range(len(self.servos)):
+            p = pos[i]
             s = self.servos[i]
             if p > pi: #Maximum value of 180 deg - Need to tune this
-                s.angle = 1
+                s.angle = 180
             elif p < 0: #Minimum of 0 deg - Need to tune this
-                s.angle = -1
+                s.angle = 0
             else:
                 s.angle = p*(180/pi) #Set servo angle for all values inbetween
-        '''
    
     def closeBus(self,servos): #Close the bus when finished
-        speeds = servos*[0] #Stop servos
-        for i in len(speeds):
-            self.throttleServo(speeds(i),i)
         self.pca.deinit()
 
 def main(args=None):
     n = 3 #Number of servos, Don't overload the board just yet!
     rclpy.init(args=args)
     minimal_subscriber = JointSub(n)
-    while rclpy.ok():
-        #Get values over and over
-        rclpy.spin_once(minimal_subscriber)
-        minimal_subscriber.throttleServos(n) #Take revised values and send to servos
-    rclpy.spin_once(minimal_subscriber) #Close the bus
-    minimal_subscriber.closeBus(n)
-    minimal_subscriber.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(minimal_subscriber)
+    except KeyboardInterrupt:
+        minimal_subscriber.closeBus(n)
+        minimal_subscriber.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
