@@ -19,11 +19,11 @@ pca.frequency = 50
 # match the stall points of the servo.
 # This is an example for the Sub-micro servo: https://www.adafruit.com/product/2201
 # servo7 = servo.Servo(pca.channels[7], min_pulse=580, max_pulse=2350)
-sleepTime = 0
-n = 1
-servos = []
+sleepTime = 0.01
+n = 12
+servos = n*[None]
 for i in range(n):
-    servos.append(servo.Servo(pca.channels[i]),min_pulse = 500, max_pulse = 2500,actuation_range = 180)
+    servos[i] = servo.Servo(pca.channels[i],min_pulse = 500, max_pulse = 2500,actuation_range = 180)
 
 # We sleep in the loops to give the servo time to move into position.
 for i in range(180):

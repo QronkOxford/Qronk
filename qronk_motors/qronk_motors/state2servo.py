@@ -65,18 +65,18 @@ class JointSub(Node):
         for i in range(len(self.servos)):
             p = pos[i]
             s = self.servos[i]
-            if p > pi: #Maximum value of 180 deg - Need to tune this
+            if p > pi/2: #Maximum value of 180 deg - Need to tune this
                 s.angle = 180
-            elif p < 0: #Minimum of 0 deg - Need to tune this
+            elif p < -pi/2: #Minimum of 0 deg - Need to tune this
                 s.angle = 0
             else:
-                s.angle = p*(180/pi) #Set servo angle for all values inbetween
+                s.angle = p*(180/pi)+90 #Set servo angle for all values inbetween
    
     def closeBus(self,servos): #Close the bus when finished
         self.pca.deinit()
 
 def main(args=None):
-    n = 3 #Number of servos, Don't overload the board just yet!
+    n = 12 #Number of servos, Don't overload the board just yet!
     rclpy.init(args=args)
     minimal_subscriber = JointSub(n)
     try:
