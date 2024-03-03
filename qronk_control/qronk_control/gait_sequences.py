@@ -43,8 +43,8 @@ def test_leg(frames=10, reach=5, origin=(0, 3.5, -12)):
     # Converts the coordinates to joint angles
     angles = []
     for coord in coords:
-        invKin = inverseKinematics("left", coord)
-        angle = [0.0, 0.0, 0.0, invKin[0], invKin[1], invKin[2], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invKin = inverseKinematics("right", coord)
+        angle = [invKin[0], invKin[1], invKin[2], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         angles.append(angle)
         
     return angles
@@ -113,11 +113,13 @@ def idle():
     invKinBL = inverseKinematics("left", JeLeft)
     invKinFR = inverseKinematics("right", JeRight)
     invKinBR = inverseKinematics("right", JeRight)
-    angle = [invKinFL[0], invKinFL[1], invKinFL[2],
-             # ! add the other legs
+
+    angle = [invKinFR[0], invKinFR[1], invKinFR[2],
+             invKinFL[0], invKinFL[1], invKinFL[2],
+             invKinBR[0], invKinBR[1], invKinBR[2],
+             invKinBL[0], invKinBL[1], invKinBL[2]
              ]
     return angle
-
 
 
 def angle_derivative(angles, dt):
