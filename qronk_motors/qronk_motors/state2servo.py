@@ -66,16 +66,13 @@ class JointSub(Node):
             p = pos[i]
             s = self.servos[i]
             if p > pi: #Maximum value of 180 deg - Need to tune this
-                s.angle = 1
+                s.angle = 180
             elif p < 0: #Minimum of 0 deg - Need to tune this
-                s.angle = -1
+                s.angle = 0
             else:
                 s.angle = p*(180/pi) #Set servo angle for all values inbetween
    
     def closeBus(self,servos): #Close the bus when finished
-        speeds = servos*[0] #Stop servos
-        for i in range(len(speeds)):
-            self.throttleServo(speeds[i],i)
         self.pca.deinit()
 
 def main(args=None):
