@@ -44,7 +44,7 @@ def test_leg(frames=10, reach=5, origin=(0, 3.5, -12)):
     angles = []
     for coord in coords:
         invKin = inverseKinematics("left", coord)
-        angle = [invKin[0], invKin[1], invKin[2], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        angle = [0.0, 0.0, 0.0, invKin[0], invKin[1], invKin[2], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         angles.append(angle)
         
     return angles
@@ -88,6 +88,7 @@ def semicircle_crawl(period=100, swing_phase_ratio=0.25, radius=2.5):
     # * 1. body slightly to the back so the centre of gravity is behind
     
 
+
     # * 2. (FL - BR - FR - BL) repeats as a cycle
 
     return coords
@@ -99,6 +100,24 @@ def stand():
 
 def sit():
     pass
+
+
+def idle():
+    """
+    Returns a single idle position of the robot for it to stay in.
+    """
+    JeLeft = [0, 3.5, -12]
+    JeRight = [0, -3.5, -12]
+
+    invKinFL = inverseKinematics("left", JeLeft)
+    invKinBL = inverseKinematics("left", JeLeft)
+    invKinFR = inverseKinematics("right", JeRight)
+    invKinBR = inverseKinematics("right", JeRight)
+    angle = [invKinFL[0], invKinFL[1], invKinFL[2],
+             # ! add the other legs
+             ]
+    return angle
+
 
 
 def angle_derivative(angles, dt):
